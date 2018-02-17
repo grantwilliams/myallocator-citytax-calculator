@@ -1,0 +1,47 @@
+#cityTaxTable {
+    background-color: #b7b7b7;
+}
+
+#cityTaxTable th, #cityTaxTable td {
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+}
+
+.table-header {
+    background-color: #b7b7b7;
+}
+
+.deposit {
+    background-color: #76a5af;
+}
+
+.einnahme {
+    background-color: #6d9eeb;
+}
+
+.cityTax {
+    background-color: #9fc5e8;
+}
+
+.accommodation {
+    background-color: #00ff00;
+}
+
+.biggerText {
+    font-size: 18px;
+}
+
+.hide-textarea {
+    position: absolute;
+    left: -99999px;
+}
+
+#extraNights {
+    width: 39px;
+    align-self: center;
+}
+
+#extraNights:focus::-webkit-input-placeholder {
+    opacity: 0;
+}

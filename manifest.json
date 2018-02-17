@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+
+  "name": "Myallocator City Tax Calc",
+  "version": "0.1.0",
+  "description": "Calculates City Tax and displays on Myallocator Bookings",
+
+  "content_scripts": [{
+    "js": ["content.js"],
+    "css": ["style.css"],
+    "matches": ["https://inbox.myallocator.com/en/booking*"]
+  }],
+
+  "browser_action": {
+    "default_icon": "tax.png"
+  }
+}
