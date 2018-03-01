@@ -28,12 +28,12 @@ const getBookingPrices = () => {
   }
 
   return bookingPrices;
-}
+};
 
 const useNewCommision = () => {
   const importDate = document.getElementsByClassName('importInfo')[0].childNodes[1].getAttribute('title');
   return new Date(importDate) >= new Date("2018-02-01");
-}
+};
 
 const getPax = () => {
   const table = [...document.querySelectorAll('dt,dd')];
@@ -50,7 +50,7 @@ const getPax = () => {
   }
 
   return pax;
-}
+};
 
 const calculateCityTax = (bookingPrices, newCommision, pax, extraPrice=0) => {
   let { channel, total, deposit, name } = bookingPrices;
@@ -92,42 +92,42 @@ const calculateCityTax = (bookingPrices, newCommision, pax, extraPrice=0) => {
       cityTax: extraPrice < 0 ? (total / pax) *0.05 : ((total + extraPrice) / pax) *0.05,
       accommodation: extraPrice < 0 ? (total / pax * 1.05) : ((total + extraPrice) / pax * 1.05)
     }
-  }
+  };
 
   return cityTax;
-}
+};
 
 const buildEvenCopyString = (name, cityTax, einnahme, pax) => {
   const copyString = `${name}\t${Number(einnahme).toFixed(2)}\t${Number(cityTax).toFixed(2)}\n`;
   return copyString.repeat(pax);
-}
+};
 
 const buildPersonWhoBookedCopyString = (name, cityTaxPWB, einnahmePWB, cityTaxOtherGuests, einnahmeOtherGuests, pax) => {
   const personWhoBookedCopyString = `${name}\t${Number(einnahmePWB).toFixed(2)}\t${Number(cityTaxPWB).toFixed(2)}\n`;
   const otherGuestsCopyString = `${name}\t${Number(einnahmeOtherGuests).toFixed(2)}\t${Number(cityTaxOtherGuests).toFixed(2)}\n`;
   return personWhoBookedCopyString + otherGuestsCopyString.repeat(pax - 1);
-}
+};
 
 const singleButtonClick = (event) => {
   document.getElementById("singleTextarea").select();
   document.execCommand('copy');
-}
+};
 
 const evenSplitButtonClick = () => {
   document.getElementById("evenSplitTextarea").select();
   document.execCommand('copy');
-}
+};
 
 const personWhoBookedButtonClick = () => {
   document.getElementById("personWhoBookedTextarea").select();
   document.execCommand('copy');
-}
+};
 
 const onInputEnterPress = (event) => {
   if (event.keyCode == 13) {
     recalculateButtonClick();
   }
-}
+};
 
 const recalculateButtonClick = () => {
   let extraNightsPrice = document.getElementById("extraNights").value;
@@ -137,7 +137,7 @@ const recalculateButtonClick = () => {
     document.getElementById('cityTaxDiv').remove();
     appendTableNodeToDOM(newCityTax);
   }
-}
+};
 
 const appendTableNodeToDOM = (cityTax) => {
   const { single, evenSplit, personWhoBooked, otherGuests } = cityTax;
@@ -220,11 +220,69 @@ const appendTableNodeToDOM = (cityTax) => {
   document.getElementById('personWhoBookedButton').addEventListener('click', personWhoBookedButtonClick);
   document.getElementById('extraNights').addEventListener('keyup', onInputEnterPress);
   document.getElementById('recalculateButton').addEventListener('click', recalculateButtonClick);
-}
+};
+
+const appendNotesNodeToDom = (notes) => {
+  const notesHtml = `
+    <div id="showNotesModal" tabindex="-1" role="dialog" aria-labelledby="showNotesModal" aria-hidden="false" class="modal hide fade in">
+      <div class="modal-header">
+        <button type="button" data-dismiss="modal" aria-hidden="true" class="close" id="dismiss-modal-x">x</button>
+        <h3 id="addNoteLabel">Notes</h3>
+      </div>
+      <div class="modal-body">
+        ${notes}
+        <div class="pull-right">
+          <button id="dismiss-modal-button" data-dismiss="modal" class="btn">Close</button>
+        </div>
+      </div>
+    </div>
+    <div id="notesModalBackdrop" class="modal-backdrop fade in"></div>
+  `
+
+  const notesNode = document.createElement('div');
+  notesNode.setAttribute('id', 'customNotes');
+  notesNode.innerHTML = notesHtml;
+
+  document.getElementById('globalLang').appendChild(notesNode);
+};
+
+const clearNotesModal = () => {
+  document.getElementById('showNotesModal').classList.remove('show');
+  document.getElementById('showNotesModal').classList.add('hide');
+  document.getElementById('notesModalBackdrop').classList.add('hide');
+};
+
+const getNotes = () => {
+  const notes = [...document.getElementsByClassName('notes')[1].getElementsByTagName('i')];
+
+  let formattedNotes = '';
+  for (let note of notes) {
+    formattedNotes += `${note.innerText}</br>`
+  }
+
+  return formattedNotes;
+};
+
+const notesExist = () => {
+  const notes = document.getElementsByClassName('notes')[1].innerText.replace(/^\s+|\s+$/g, '');
+  return notes !== 'No notes present.';
+};
+
+const loadNotesModal = () => {
+  const notes = getNotes();
+  if (notesExist()) {
+    appendNotesNodeToDom(notes);
+    document.getElementById('showNotesModal').classList.remove('hide');
+    document.getElementById('showNotesModal').classList.add('show');
+    document.getElementById('dismiss-modal-x').addEventListener('click', clearNotesModal);
+    document.getElementById('dismiss-modal-button').addEventListener('click', clearNotesModal);
+  }
+};
 
 const bookingPrices = getBookingPrices();
-const newCommision  = useNewCommision()
+const newCommision = useNewCommision();
 const pax = getPax();
 const cityTax = calculateCityTax(bookingPrices, newCommision, pax);
 
 appendTableNodeToDOM(cityTax);
+loadNotesModal();
