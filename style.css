@@ -37,11 +37,16 @@
     left: -99999px;
 }
 
-#extraNights {
+.table-input {
     width: 39px;
     align-self: center;
+    text-align: center;
 }
 
-#extraNights:focus::-webkit-input-placeholder {
+.table-input:focus::-webkit-input-placeholder {
     opacity: 0;
+}
+
+.table-label {
+    text-align: right !important;
 }

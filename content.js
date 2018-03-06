@@ -130,16 +130,17 @@ const onInputEnterPress = (event) => {
 };
 
 const recalculateButtonClick = () => {
+  const newPax = parseInt(document.getElementById("pax").value);
   let extraNightsPrice = document.getElementById("extraNights").value;
-  if (!isNaN(extraNightsPrice) && extraNightsPrice !== '') {
+  if (!isNaN(extraNightsPrice) && extraNightsPrice !== '' && newPax > 0) {
     extraNightsPrice = parseFloat(extraNightsPrice);
-    const newCityTax = calculateCityTax(bookingPrices, newCommision, pax, extraNightsPrice);
+    const newCityTax = calculateCityTax(bookingPrices, newCommision, newPax, extraNightsPrice);
     document.getElementById('cityTaxDiv').remove();
-    appendTableNodeToDOM(newCityTax);
+    appendTableNodeToDOM(newCityTax, newPax);
   }
 };
 
-const appendTableNodeToDOM = (cityTax) => {
+const appendTableNodeToDOM = (cityTax, pax) => {
   const { single, evenSplit, personWhoBooked, otherGuests } = cityTax;
   const htmlTable = `</br></br>
   <table id="cityTaxTable" class="table">
@@ -195,12 +196,18 @@ const appendTableNodeToDOM = (cityTax) => {
         <td class="${pax == 1 ? 'hidden' : null} table-header"></td>
       </tr>
       <tr>
-        <td colspan="3" class="table-header">Total price of added or subtracted nights ('-' for subtracting)</td>
+        <td colspan="3" class="table-header table-label">Total price of added or subtracted nights ('-' for subtracting)</td>
         <td class="table-header">
-          <input id="extraNights" placeholder="  -22">
+          <input id="extraNights" class="table-input" placeholder="-22">
         </td>
         <td class="table-header">
           <button title="Recalculate" id="recalculateButton" class="btn btn-success"><i class="fa fa-calculator"></i></button>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3" class="table-header table-label">No. of Guests</td>
+        <td class="table-header">
+          <input id="pax" class="table-input" value="${pax}">
         </td>
       </tr>
     </tbody>
@@ -219,6 +226,7 @@ const appendTableNodeToDOM = (cityTax) => {
   document.getElementById('evenSplitButton').addEventListener('click', evenSplitButtonClick);
   document.getElementById('personWhoBookedButton').addEventListener('click', personWhoBookedButtonClick);
   document.getElementById('extraNights').addEventListener('keyup', onInputEnterPress);
+  document.getElementById('pax').addEventListener('keyup', onInputEnterPress);
   document.getElementById('recalculateButton').addEventListener('click', recalculateButtonClick);
 };
 
@@ -284,5 +292,5 @@ const newCommision = useNewCommision();
 const pax = getPax();
 const cityTax = calculateCityTax(bookingPrices, newCommision, pax);
 
-appendTableNodeToDOM(cityTax);
+appendTableNodeToDOM(cityTax, pax);
 loadNotesModal();
